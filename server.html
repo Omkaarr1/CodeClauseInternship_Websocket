@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Chat Application</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <style>
+        body {
+            background-color: #333;
+            color: white;
+            font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+        }
+
+        #background-animation-container {
+            background-color: #222;
+            height: 100%;
+            left: 0;
+            overflow: hidden;
+            position: absolute;
+            top: 0;
+            width: 100%;
+            z-index: -1000;
+        }
+
+        .ani-bubble {
+            background-color: blue;
+            border-radius: 75px;
+            height: 150px;
+            position: absolute;
+            top: 100%;
+            width: 150px;
+
+            -webkit-animation: bubblemove 10s linear infinite;
+            -moz-animation: bubblemove 10s linear infinite;
+            animation: bubblemove 10s linear infinite;
+        }
+
+        @-webkit-keyframes bubblemove {
+            from {
+                top: 100%;
+            }
+
+            to {
+                top: -600px;
+            }
+        }
+
+        @-moz-keyframes bubblemove {
+            from {
+                top: 100%;
+            }
+
+            to {
+                top: -600px;
+            }
+        }
+
+        @keyframes bubblemove {
+            from {
+                top: 100%;
+            }
+
+            to {
+                top: -600px;
+            }
+
+            /* This must be far enough off screen to allow the largest object to wander off with enough delay before restarting at the bottom, to be caught by the interval timer */
+        }
+
+        .chat-box {
+            background-color: rgba(210, 234, 245, 0.164);
+            /* Slightly transparent white background */
+            max-width: 400px;
+            margin: 20px auto;
+            padding: 10px;
+            border-radius: 10px;
+            margin-top: 150px;
+        }
+
+        .header {
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .messages {
+            max-height: 300px;
+            overflow-y: scroll;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        .messages p {
+            margin: 5px 0;
+        }
+
+        .input-box {
+            display: flex;
+        }
+
+        .input-box input {
+            flex-grow: 1;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px 0 0 5px;
+        }
+
+        .input-box button {
+            padding: 5px 10px;
+            border: 1px solid #ccc;
+            border-radius: 0 5px 5px 0;
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="background-animation-container">
+        <div class="ani-bubble"></div>
+        <div class="ani-bubble"></div>
+        <div class="ani-bubble"></div>
+        <div class="ani-bubble"></div>
+        <div class="ani-bubble"></div>
+        <div class="ani-bubble"></div>
+        <div class="ani-bubble"></div>
+        <div class="ani-bubble"></div>
+        <div class="ani-bubble"></div>
+        <div class="ani-bubble"></div>
+        <div class="ani-bubble"></div>
+        <div class="ani-bubble"></div>
+        <div class="ani-bubble"></div>
+        <div class="ani-bubble"></div>
+        <div class="ani-bubble"></div>
+        <div class="ani-bubble"></div>
+        <div class="ani-bubble"></div>
+        <div class="ani-bubble"></div>
+        <div class="ani-bubble"></div>
+        <div class="ani-bubble"></div>
+        <div class="ani-bubble"></div>
+        <div class="ani-bubble"></div>
+        <div class="ani-bubble"></div>
+        <div class="ani-bubble"></div>
+        <div class="ani-bubble"></div>
+        <div class="ani-bubble"></div>
+        <div class="ani-bubble"></div>
+        <div class="ani-bubble"></div>
+        <div class="ani-bubble"></div>
+        <div class="ani-bubble"></div>
+        <div class="ani-bubble"></div>
+    </div>
+
+    <div class="chat-box">
+        <div class="header">Chat User 2</div>
+        <div class="messages" id="messages-container"></div>
+        <div class="input-box">
+            <input type="text" id="message-input" placeholder="Type your message...">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+    <script>
+        var mybubbles = document.getElementsByClassName("ani-bubble");
+
+        var bubblecolors = ["#c5a5ab", "#e3e2dd", "#87a6c0"];
+
+        for (var i = 0; i < mybubbles.length; i++) {
+
+            mybubbles[i].style.backgroundColor = bubblecolors[Math.floor(Math.random() * bubblecolors.length)];
+            mybubbles[i].style.opacity = Math.random() * .75;
+
+            var bubblesize = (Math.floor(Math.random() * 9) + 2) * 50;
+
+            mybubbles[i].style.width = bubblesize + "px";
+            mybubbles[i].style.height = bubblesize + "px";
+            mybubbles[i].style.borderRadius = (bubblesize / 2) + "px";
+
+            mybubbles[i].style.left = Math.floor(Math.random() * 100) + "%";
+
+            mybubbles[i].style.animationDuration = Math.floor(Math.random() * 16) + 8 + "s";
+            mybubbles[i].style.animationDelay = Math.floor(Math.random() * 8) + "s";
+
+        }
+
+        $(document).ready(function () {
+            jQuery.expr.filters.offscreen = function (el) {
+                return (
+                    (el.offsetLeft + el.offsetWidth) < 0
+                    || (el.offsetTop + el.offsetHeight) < 0
+                    || (el.offsetLeft > window.innerWidth || el.offsetTop > window.innerHeight)
+                );
+            };
+            setInterval(function () {
+                $('.ani-bubble').each(function () {
+                    if ($(this).is(':offscreen')) {
+                        var bubbleoffset = Math.floor((Math.random() * 140) - 19);
+                        $(this).css({ 'left': bubbleoffset + '%' });
+                    }
+                });
+            }, 50);
+        });
+    </script>
+
+    <script>
+        const socket = new WebSocket('ws://localhost:8080');
+
+        socket.onopen = () => {
+            console.log('WebSocket connection established');
+        };
+
+        socket.onmessage = (event) => {
+            const messagesContainer = document.getElementById('messages-container');
+            const newMessage = document.createElement('p');
+            newMessage.textContent = event.data;
+            messagesContainer.appendChild(newMessage);
+        };
+
+        socket.onclose = () => {
+            console.log('WebSocket connection closed');
+        };
+
+        function sendMessage() {
+            const messageInput = document.getElementById('message-input');
+            const message = messageInput.value;
+            if (message.trim() !== '') {
+                const messagesContainer = document.getElementById('messages-container');
+                const newMessage = document.createElement('p');
+                newMessage.textContent = 'You: ' + message; // Display sent message
+                messagesContainer.appendChild(newMessage);
+                socket.send(message);
+                messageInput.value = '';
+            }
+        }
+    </script>
+</body>
+
+</html>
