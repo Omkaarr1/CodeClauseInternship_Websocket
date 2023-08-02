@@ -23,7 +23,7 @@ In this presentation, we will explore the process of building a WebSocket-based 
 1. Install the required Node.js modules by running 'npm install ws' in the project directory.
 2. Set up the WebSocket server using the provided 'server.js' code.
 3. Create an HTML file with the client-side code ('index.html') and include the appropriate CSS styles.
-4. Open a web browser and navigate to 'http://localhost:8080' to access the chat application.
+4. Open both the index and server html webpages
 5. The chat box will display messages sent by each client along with the corresponding client IDs.
 6. Type a message in the input field and click "Send" to see it displayed in the chat box and forwarded to the other client.
 7. Two clients can communicate back and forth in real-time, and the application will maintain a one-to-one messaging system.
